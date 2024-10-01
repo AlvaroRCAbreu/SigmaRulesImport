@@ -1,0 +1,53 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  SIGMA_RULE_PATH: $(sigma_rule_path)  # Variável que armazena o caminho da regra, passada como parâmetro.
+  DATADOG_API_KEY: $(datadog_api_key)  # API Key do Datadog (configurada como variável de pipeline).
+
+steps:
+
+# Etapa 1: Clonar repositório Git
+- checkout: none
+- script: |
+    git clone https://github.com/SigmaHQ/sigma.git
+  displayName: 'Clonar repositório do Git'
+
+# Etapa 2: Instalar Sigma-CLI
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    pip install sigma-cli  # Instala o Sigma-CLI
+  displayName: 'Instalar Sigma-CLI'
+
+# Etapa 3: Adicionar plugin ao Sigma-CLI
+- script: |
+    sigma plugin install datadog -f
+  displayName: 'Adicionar Plugin do Datadog ao Sigma-CLI'
+
+# Etapa 4: Rodar Sigma-CLI com a regra
+- script: |
+    sigma convert -t datadog $(SIGMA_RULE_PATH)  # Substitua "es-qs" pelo backend necessário
+  displayName: 'Executar Sigma-CLI com a regra'
+
+# Etapa 5: Enviar resultado para o Datadog via API
+- script: |
+    SIGMA_OUTPUT=$(sigma convert -t datadog $(SIGMA_RULE_PATH))  # Captura a saída do comando sigma
+    curl -X POST "https://api.datadoghq.com/api/v1/events" \
+      -H "Content-Type: application/json" \
+      -H "DD-API-KEY: $(DATADOG_API_KEY)" \
+      -d '{
+            "title": "Sigma CLI Output",
+            "text": "'"$SIGMA_OUTPUT"'",
+            "priority": "normal",
+            "tags": ["sigma"],
+            "alert_type": "info"
+          }'
+  displayName: 'Enviar saída do Sigma-CLI para o Datadog'
+
