@@ -30,7 +30,7 @@ steps:
 
 # Etapa 4: Rodar Sigma-CLI com a regra
 - script: |
-    sigma convert -t datadog "$(Build.SourcesDirectory)/sigma/$(sigmaRulePath)" -f siem_rule
+    sigma convert -t datadog "$(Build.SourcesDirectory)/sigma/$(sigmaRulePath)" 
   displayName: 'Executar Sigma-CLI com a regra'
 
 # Etapa 5: Enviar resultado para o Datadog via API
