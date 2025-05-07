@@ -35,7 +35,7 @@ steps:
 
 # Etapa 5: Enviar resultado para o Datadog via API
 - script: |
-    SIGMA_OUTPUT=$(sigma convert -t datadog $(sigmaRulePath))  # Captura a saída do comando sigma
+    SIGMA_OUTPUT=$(sigma convert -t datadog "$(Build.SourcesDirectory)/sigma/$(sigmaRulePath)" -f siem_rule)  # Captura a saída do comando sigma
     curl -X POST "https://api.datadoghq.com/api/v1/events" \
       -H "Content-Type: application/json" \
       -H "DD-API-KEY: $(datadog_api_key)" \
