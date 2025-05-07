@@ -6,13 +6,13 @@ pool:
 
 variables:
   - name: SIGMA_RULE_PATH
-    value: $(sigma_rule_path)  # Variável que armazena o caminho da regra, passada como parâmetro.
+    value: $(sigmaRulePath)  # Variável que armazena o caminho da regra, passada como parâmetro.
   - name: DATADOG_API_KEY
     value: $(datadog_api_key)  # API Key do Datadog (configurada como variável de pipeline)
 
 
 steps:
-- script: echo "$(SIGMA_RULE_PATH)"
+- script: echo "$(sigmaRulePath)"
   displayName: "Regra Informada"
 # Etapa 1: Clonar repositório Git
 - checkout: none
