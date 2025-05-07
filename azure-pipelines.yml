@@ -14,7 +14,7 @@ steps:
 - checkout: none
 - script: |
     git clone https://github.com/SigmaHQ/sigma.git
-  displayName: 'Clonar repositório do Git'
+  displayName: 'Clonar repositório Sigma do Git'
 
 # Etapa 2: Instalar Sigma-CLI
 - task: UsePythonVersion@0
@@ -33,7 +33,7 @@ steps:
 
 # Etapa 4: Rodar Sigma-CLI com a regra
 - script: |
-    sigma convert -t datadog $(SIGMA_RULE_PATH)  # Substitua "es-qs" pelo backend necessário
+    sigma convert -t datadog $(SIGMA_RULE_PATH) -f siem_rule # Substitua "es-qs" pelo backend necessário
   displayName: 'Executar Sigma-CLI com a regra'
 
 # Etapa 5: Enviar resultado para o Datadog via API
