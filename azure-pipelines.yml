@@ -30,13 +30,13 @@ steps:
 
 # Etapa 4: Rodar Sigma-CLI com a regra
 - script: |
-    sigma convert -t datadog "$(Build.SourcesDirectory)/sigma/$(sigmaRulePath)" 
+    sigma convert -t datadog "$(Build.SourcesDirectory)/sigma/$(sigmaRulePath)" -f siem-rule
   displayName: 'Executar Sigma-CLI com a regra'
 
 # Etapa 5: Enviar resultado para o Datadog via API
 - script: |
     SIGMA_OUTPUT=$(sigma convert -t datadog "$(Build.SourcesDirectory)/sigma/$(sigmaRulePath)" -f siem_rule)  # Captura a saída do comando sigma
-    curl -X POST "https://api.datadoghq.com/api/v1/events" \
+    curl -X POST "https://api.datadoghq.com/api/v2/security_monitoring/rules" \
       -H "Content-Type: application/json" \
       -H "DD-API-KEY: $(datadog_api_key)" \
       -d '{
