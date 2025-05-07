@@ -4,13 +4,6 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  - name: SIGMA_RULE_PATH
-    value: $(sigmaRulePath)  # Variável que armazena o caminho da regra, passada como parâmetro.
-  - name: DATADOG_API_KEY
-    value: $(datadog_api_key)  # API Key do Datadog (configurada como variável de pipeline)
-
-
 steps:
 - script: echo "$(sigmaRulePath)"
   displayName: "Regra Informada"
@@ -37,15 +30,15 @@ steps:
 
 # Etapa 4: Rodar Sigma-CLI com a regra
 - script: |
-    sigma convert -t datadog $(SIGMA_RULE_PATH) -f siem_rule # Substitua "es-qs" pelo backend necessário
+    sigma convert -t datadog $(sigmaRulePath) -f siem_rule # Substitua "es-qs" pelo backend necessário
   displayName: 'Executar Sigma-CLI com a regra'
 
 # Etapa 5: Enviar resultado para o Datadog via API
 - script: |
-    SIGMA_OUTPUT=$(sigma convert -t datadog $(SIGMA_RULE_PATH))  # Captura a saída do comando sigma
+    SIGMA_OUTPUT=$(sigma convert -t datadog $(sigmaRulePath))  # Captura a saída do comando sigma
     curl -X POST "https://api.datadoghq.com/api/v1/events" \
       -H "Content-Type: application/json" \
-      -H "DD-API-KEY: $(DATADOG_API_KEY)" \
+      -H "DD-API-KEY: $(datadog_api_key)" \
       -d '{
             "title": "Sigma CLI Output",
             "text": "'"$SIGMA_OUTPUT"'",
