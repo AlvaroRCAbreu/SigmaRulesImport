@@ -5,8 +5,11 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  SIGMA_RULE_PATH: $(sigma_rule_path)  # Variável que armazena o caminho da regra, passada como parâmetro.
-  DATADOG_API_KEY: $(datadog_api_key)  # API Key do Datadog (configurada como variável de pipeline).
+  - name: SIGMA_RULE_PATH
+    value: $(sigma_rule_path)  # Variável que armazena o caminho da regra, passada como parâmetro.
+  - name: DATADOG_API_KEY
+    value: $(datadog_api_key)  # API Key do Datadog (configurada como variável de pipeline)
+
 
 steps:
 - script: echo "$(SIGMA_RULE_PATH)"
