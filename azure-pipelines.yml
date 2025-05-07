@@ -9,7 +9,7 @@ variables:
   DATADOG_API_KEY: $(datadog_api_key)  # API Key do Datadog (configurada como variável de pipeline).
 
 steps:
-- script: echo $(SIGMA_RULE_PATH)
+- script: echo "$(SIGMA_RULE_PATH)"
   displayName: "Regra Informada"
 # Etapa 1: Clonar repositório Git
 - checkout: none
