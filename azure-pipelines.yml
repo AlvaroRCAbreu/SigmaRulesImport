@@ -34,7 +34,7 @@ steps:
   displayName: 'Executar Sigma-CLI com a regra'
 
 - script: |
-    echo "%datadog_api_key%"
+    echo "$(DATADOG_API_KEY)"
 # Etapa 5: Enviar resultado para o Datadog via API
 - script: |
     SIGMA_OUTPUT=$(sigma convert -t datadog "$(Build.SourcesDirectory)/sigma/$(sigmaRulePath)" -f siem_rule)  # Captura a saída do comando sigma
